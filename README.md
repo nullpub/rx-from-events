@@ -134,7 +134,7 @@ import { fromEvents, ReadableStreamMap } from '@nll/rx-from-events';
 import { curry } from 'lodash';
 import 'rxjs/add/operator/reduce';
 
-const fromReadStream = curry(fromEvents())(ReadableStreamMap);
+const fromReadStream = curry(fromEvents)(ReadableStreamMap);
 const readFile = (path, opts) => fromReadStream(createReadableStream(path, opts));
 
 readFile('./README.md', {encoding: 'utf-8'})
