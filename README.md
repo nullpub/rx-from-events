@@ -56,7 +56,7 @@ const { fromEvents } = require('@nll/rx-from-events');
 const { createReadStream } = require('fs');
 
 const stream = createReadStream('./example.ts', {encoding: 'utf-8'});
-const obs = fromEvents<string>(ReadableStreamMap, stream);
+const obs = fromEvents(ReadableStreamMap, stream);
 
 obs.subscribe(n => console.log(n));
 ```
@@ -68,7 +68,7 @@ var fromEvents = require('@nll/rx-from-events').fromEvents;
 var createReadStream = require('fs').createReadStream;
 
 var stream = createReadStream('./example.ts', {encoding: 'utf-8'});
-var obs = fromEvents<string>(ReadableStreamMap, stream);
+var obs = fromEvents(ReadableStreamMap, stream);
 
 obs.subscribe(n => console.log(n));
 ```
@@ -76,7 +76,7 @@ obs.subscribe(n => console.log(n));
 ## API
 This module was written in native typescript with type definitions automatically created. For those without types here are the function signatures.
 
-#### fromEvents\<T>(*map*: EventMap, *emitter*: EventEmitter) => Observable\<T>
+#### fromEvents\<T>(*map*: EventMap, *emitter*: EventEmitter): Observable\<T>
 
 The magic here lies in the EventMap interface. There really isn't any magic, here's what the interface looks like in the source code.
 
@@ -92,9 +92,11 @@ Basically, what's happening under the hood is that each item in each array is ma
 
 ```ts
 nexts.forEach(n => emitter.on(n, observable.next));
+errors.forEach(n => emitter.on(n, observable.error));
+completes.forEach(n => emitter.on(n, observable.complete));
 ```
 
-Additionally, there is code to cleanup the listeners after an error or complete event occurs, so you don't have to.
+It's a little more complicated that this snippet, but you get the idea.. Additionally, there is code to cleanup the listeners after an error or complete event occurs, so you don't have to.
 
 ### Helper EventMap Objects
 There are a handful of predefined EventMaps included in this module. They are useful for keeping your fromEvents calls a bit simpler. It's easiest for me to simply copy the source for these here, as both documentation and as examples for creating your own EventMap definitions.
@@ -123,7 +125,7 @@ export const InputMap: EventMap = {
 };
 ```
 
-Keep in mind that the EventType property for EventEmitter is of type ```<any>``` so you can supply event types other than ```string```.
+Notice that the only property of an EventMap that is required is the ```nexts``` property. Also, keep in mind that the EventType property for EventEmitter is of type ```<any>``` so you can supply event types other than ```string```.
 
 ## Minorly Functional
 The fromEvents function was written to be curried. If you've got lodash around you can make your life a little bit easier.
