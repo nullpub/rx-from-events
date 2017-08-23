@@ -57,7 +57,7 @@ export function fromEvents<T>(
     emitter: EventEmitter
   ): Observable<T> {
   ok(nexts.length >= 0, 'Must have at least one event to listen for.');
-  const proj = typeof projector === 'function' ? projector : (...args: T[]) => args;
+  const proj = typeof projector === 'function' ? projector : (...args: T[]) => args[0];
 
   return Observable.create((observer: Observer<T>) => {
     let listeners: metaListener[] = [];
