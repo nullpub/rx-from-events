@@ -1,6 +1,6 @@
 {
   "name": "@nll/rx-from-events",
-  "version": "2.0.0",
+  "version": "2.0.1",
   "description": "rxjs fromEvent but for multiple events",
   "main": "dist/index.js",
   "scripts": {
