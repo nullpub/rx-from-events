@@ -82,21 +82,34 @@ The magic here lies in the EventMap interface. There really isn't any magic, her
 
 ```ts
 export interface EventMap {
-  nexts: any[],
-  errors?: any[],
-  completes?: any[]
+  nexts: any[];
+  errors?: any[];
+  completes?: any[];
+  projector?: (...args: any[]) => any;
 }
 ```
 
 Basically, what's happening under the hood is that each item in each array is mapped to the associated Observable channel, like this:
 
 ```ts
-nexts.forEach(n => emitter.on(n, observable.next));
+nexts.forEach(n => emitter.on(n, (...args) => observable.next(projector(...args))));
 errors.forEach(n => emitter.on(n, observable.error));
 completes.forEach(n => emitter.on(n, observable.complete));
 ```
 
-It's a little more complicated that this snippet, but you get the idea.. Additionally, there is code to cleanup the listeners after an error or complete event occurs, so you don't have to.
+It's a little more complicated than this snippet, but you get the idea.. Additionally, there is code to cleanup the listeners after an error or complete event occurs, so you don't have to.
+
+**What the hell is the projector?**
+
+Glad you asked! An Observable expects a single object for each event. However, event listeners can accept multiple objects. For example, the Http.Server emitter emits both a request and a response object to any listener attached to the ```'request'``` event. In order for us to capture both of those arguments, we can implement the concept of a projector. A projector receives all of the arguments that a listener would and is expected to serialize them into a single object.
+
+For example, the provided ```ServerMap``` event map has the following projector:
+
+```ts
+projector = (request, response) => ({request, response});
+```
+
+Easy peazy..
 
 ### Helper EventMap Objects
 There are a handful of predefined EventMaps included in this module. They are useful for keeping your fromEvents calls a bit simpler. It's easiest for me to simply copy the source for these here, as both documentation and as examples for creating your own EventMap definitions.

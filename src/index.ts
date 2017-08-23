@@ -14,14 +14,15 @@ import { ok } from 'assert';
 
 export interface metaListener {
   type: 'next' | 'error' | 'complete';
-  event: string;
+  event: any;
   listener: (...args: any[]) => void;
 }
 
 export interface EventMap {
-  nexts: any[],
-  errors?: any[],
-  completes?: any[]
+  nexts: any[];
+  errors?: any[];
+  completes?: any[];
+  projector?: (...args: any[]) => any;
 }
 
 // Standard Event Maps
@@ -29,6 +30,12 @@ export const ReadableStreamMap: EventMap = {
   nexts: ['data'],
   errors: ['error'],
   completes: ['end', 'close']
+}
+export const ServerMap: EventMap = {
+  nexts: ['request'],
+  errors: ['error'],
+  completes: ['close'],
+  projector: (request, response) => ({request, response})
 }
 export const RequestMap: EventMap = {
   nexts: ['response'],
@@ -43,15 +50,19 @@ export const ResponseMap: EventMap = {
 export const ButtonMap: EventMap = { nexts: ['click'] };
 export const InputMap: EventMap = { nexts: ['focus', 'blur', 'keyup', 'change'] };
 
+const defaultEventMap: EventMap = { nexts: [], errors: [], completes: [], projector: (...args) => args }
+
 export function fromEvents<T>(
-    { nexts, errors, completes }: EventMap = { nexts: [], errors: [], completes: [] },
+    { nexts, errors, completes, projector }: EventMap = defaultEventMap,
     emitter: EventEmitter
   ): Observable<T> {
   ok(nexts.length >= 0, 'Must have at least one event to listen for.');
+  const proj = typeof projector === 'function' ? projector : (...args: T[]) => args;
+
   return Observable.create((observer: Observer<T>) => {
     let listeners: metaListener[] = [];
 
-    const next = (event: any) => observer.next(event);
+    const next = (...event: any[]) => observer.next(proj(...event));
     const error = (event: any) => observer.error(event);
     const complete = () => observer.complete();
 
