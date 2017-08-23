@@ -1,5 +1,5 @@
 {
-  "name": "rx-from-events",
+  "name": "@nll/rx-from-events",
   "version": "1.0.0",
   "description": "rxjs fromEvent but for multiple events",
   "main": "dist/index.js",
@@ -11,13 +11,30 @@
   },
   "author": "Brandon Blaylock (brandon@null.pub)",
   "license": "MPL-2.0",
-  "dependencies": {
+  "peerDependencies": {
     "rxjs": "^5.4.3"
   },
   "devDependencies": {
     "@types/node": "^8.0.24",
+    "rxjs": "^5.4.3",
     "ts-node": "^3.3.0",
     "nodemon": "^1.11.0",
     "typescript": "^2.4.2"
-  }
+  },
+  "directories": {
+    "example": "examples"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/nullpub/rx-from-events.git"
+  },
+  "keywords": [
+    "rxjs",
+    "events",
+    "observables"
+  ],
+  "bugs": {
+    "url": "https://github.com/nullpub/rx-from-events/issues"
+  },
+  "homepage": "https://github.com/nullpub/rx-from-events#readme"
 }

@@ -6,7 +6,7 @@ import { createReadStream } from 'fs';
 import 'rxjs/add/operator/reduce';
 
 const stream = createReadStream('./example.ts', {encoding: 'utf-8'});
-const obs = fromEvents<string>(stream, ReadableStreamMap);
+const obs = fromEvents<string>(ReadableStreamMap, stream);
 
 obs
   .reduce((acc: string, curr: string) => acc += curr)

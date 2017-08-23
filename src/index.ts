@@ -1,3 +1,9 @@
+/**
+ * This Source Code Form is subject to the terms of the Mozilla Public
+ * License, v. 2.0. If a copy of the MPL was not distributed with this
+ * file, You can obtain one at http://mozilla.org/MPL/2.0/.
+ */
+
 /// <reference path="../node_modules/@types/node/index.d.ts" />
 'use strict';
 
@@ -38,8 +44,8 @@ export const ButtonMap: EventMap = { nexts: ['click'] };
 export const InputMap: EventMap = { nexts: ['focus', 'blur', 'keyup', 'change'] };
 
 export function fromEvents<T>(
-    emitter: EventEmitter,
-    { nexts, errors, completes }: EventMap = { nexts: [], errors: [], completes: [] }
+    { nexts, errors, completes }: EventMap = { nexts: [], errors: [], completes: [] },
+    emitter: EventEmitter
   ): Observable<T> {
   ok(nexts.length >= 0, 'Must have at least one event to listen for.');
   return Observable.create((observer: Observer<T>) => {

@@ -11,11 +11,11 @@ const options = { host: 'ethe.us' };
 const req = request(options);
 req.end();
 
-const obs = fromEvents<IncomingMessage>(req, RequestMap)
+const obs = fromEvents<IncomingMessage>(RequestMap, req)
 
 obs
   .do(res => res.setEncoding('utf8'))
-  .mergeMap(res => fromEvents<string>(res, ResponseMap))
+  .mergeMap(res => fromEvents<string>(ResponseMap, res))
   .reduce((body, data) => body += data)
   .subscribe(
     body => console.log(body),
